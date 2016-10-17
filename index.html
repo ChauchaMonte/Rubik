@@ -12,19 +12,21 @@
 	<script src="js/TrackballControls.js"></script>
 	<div id="canvas" align="center"></div>
 		<script>
+				//creo variables pricipales necesarias
 				var escena, camara, renderer, controls, container=document.createElement('canvas');
-				var canvasWidth= window.innerWidth-50;
-				var canvasHeight= window.innerHeight-50;
+				var canvasWidth= window.innerWidth-50; // tomo las medidas de la ventana (canvas)
+				var canvasHeight= window.innerHeight-50; // tomo las medidas de la ventana (canvas)
 				
+				//creo cada cubo que conformara mi cubo principal
 				var cubo000;var cubo001;var cubo002;var cubo003;var cubo004;var cubo005;var cubo006;var cubo007;var cubo008;
 				var cubo009;var cubo010;var cubo011;var cubo012;var cubo013;var cubo014;var cubo015;var cubo016;var cubo017;
 				var cubo018;var cubo019;var cubo020;var cubo021;var cubo022;var cubo023;var cubo024;var cubo025;
 
+
 				var objects = [];
-
-				var raycaster = new THREE.Raycaster();
 				var mouse = new THREE.Vector2();
-
+				var raycaster = THREE.Raycaster();
+				var INTERSECTED;
 			
 				startEscena();	
 				animate();
@@ -49,16 +51,14 @@
 				  document.body.appendChild(renderer.domElement);
 				  
 				  window.addEventListener('resize', onWindowResize, false);
-				  window.addEventListener('mousemove', onWindowsClick, false);
+				  window.addEventListener('mousemove', onWindowsClick);
 				  window.requestAnimationFrame(render);
 
 				}
 				function onWindowsClick(event){
-				
+					event.preventDefault();
 					mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 					mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-						
-
 				}
 
 				function onWindowResize(e){
@@ -102,11 +102,20 @@
 				}
 
 				function render(){
-					raycaster.setFromCamera(mouse, camara);
-					var intersects = raycaster.intersectObjects(escena.children);
-					for(var i = 0; i < intersects.length; i++){
-					intersects[i].object.material.color.set(0x000000);
-					}
+					//busco la interseccion con los cubitos y el mouse
+					/*raycaster.setFromCamera(mouse, camara);
+					var intersects = raycaster.intersectObject(escena.children);
+					if(intersects.length>0){
+						if ( INTERSECTED != intersects[ 0 ].object ) {
+							if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+								INTERSECTED = intersects[ 0 ].object;
+								INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+								INTERSECTED.material.emissive.setHex( 0xff0000 );
+						}
+					}else{
+						if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+						INTERSECTED = null;
+					}*/
 					renderer.render(escena, camara); 
 				}
 
@@ -271,4 +280,4 @@
 				}
 			</script>
 	</body>
-</html>>
+</html>
