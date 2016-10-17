@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>test</title>
+	<style>
+		body { margin: 0; }
+		canvas { width: 756px; height: 682px }
+	</style>
+</head>
+<body>
+	<script src="js/three.js"></script>
+	<script src="js/TrackballControls.js"></script>
+	<div id="canvas" align="center"></div>
+		<script>
+				var escena, camara, renderer, controls, container=document.createElement('canvas');
+				var canvasWidth= window.innerWidth-50;
+				var canvasHeight= window.innerHeight-50;
+				
+				var cubo000;var cubo001;var cubo002;var cubo003;var cubo004;var cubo005;var cubo006;var cubo007;var cubo008;
+				var cubo009;var cubo010;var cubo011;var cubo012;var cubo013;var cubo014;var cubo015;var cubo016;var cubo017;
+				var cubo018;var cubo019;var cubo020;var cubo021;var cubo022;var cubo023;var cubo024;var cubo025;
+
+				var objects = [];
+
+				var raycaster = new THREE.Raycaster();
+				var mouse = new THREE.Vector2();
+
+			
+				startEscena();	
+				animate();
+
+				function startEscena(){
+				  camara = new THREE.PerspectiveCamera(45, canvasWidth / canvasHeight, 1, 1000); 
+				  
+				  camara.position.z = 600;
+				  camara.lookAt(new THREE.Vector3(0,0,0));
+				  controls = new THREE.TrackballControls( camara );
+				  controls.addEventListener ('change', render);
+				  controls.rotateSpeed = 7.0;
+				  controls.noZoom = true;
+
+				  escena = new THREE.Scene(); // definimos la escena
+				  
+				  crearcubos();
+
+				  renderer = new THREE.WebGLRenderer({ antialias: true });
+				  renderer.setSize(canvasWidth, canvasHeight);
+				  renderer.setClearColor( 0xf0f0f0 );
+				  document.body.appendChild(renderer.domElement);
+				  
+				  window.addEventListener('resize', onWindowResize, false);
+				  window.addEventListener('mousemove', onWindowsClick, false);
+				  window.requestAnimationFrame(render);
+
+				}
+				function onWindowsClick(event){
+				
+					mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+					mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+						
+
+				}
+
+				function onWindowResize(e){
+					canvasWidth = window.innerWidth-50;
+					canvasHeight = window.innerHeight-50;
+					renderer.setSize(canvasWidth, canvasHeight);
+					camara.aspect = canvasWidth/canvasHeight;
+					camara.updateProjectionMatrix();
+				}
+
+				function cubitos(){
+					var cubo;
+					var cuboMateriales = [
+					   new THREE.MeshBasicMaterial({color:0x00CC00}),
+					   new THREE.MeshBasicMaterial({color:0x0066CC}),
+					   new THREE.MeshBasicMaterial({color:0xFF0000}),
+					   new THREE.MeshBasicMaterial({color:0xFFFF00}),
+					   new THREE.MeshBasicMaterial({color:0xFF6600}),
+					   new THREE.MeshBasicMaterial({color:0xFFFFFF})
+					];
+					var cuboMaterial = new THREE.MeshFaceMaterial(cuboMateriales);
+					var cuboGeometria = new THREE.BoxGeometry(30, 30, 30);
+					cubo = new THREE.Mesh(cuboGeometria, cuboMaterial);
+					cubo.visible=true;
+				return cubo;
+				}
+				function edgeCubitos(cubito){
+					helper=new THREE.WireframeHelper(cubito);
+					helper.material.color.set(0x000000);
+					helper.visible=false;
+					escena.add(helper);
+					box = new THREE.BoxHelper(cubito);
+					box.material.color.set(0x000000);
+					objects.push (box);
+				return box;
+				}
+				function animate() { 
+				   requestAnimationFrame ( animate );
+				   controls.update();
+				   render();
+				}
+
+				function render(){
+					raycaster.setFromCamera(mouse, camara);
+					var intersects = raycaster.intersectObjects(escena.children);
+					for(var i = 0; i < intersects.length; i++){
+					intersects[i].object.material.color.set(0x000000);
+					}
+					renderer.render(escena, camara); 
+				}
+
+				function crearcubos(){
+				// CUBOS
+					cubo000 = cubitos();
+					cubo000.position.set(0, 0, 0);
+					escena.add(cubo000);
+					escena.add(edgeCubitos(cubo000));
+					//objects.push (cubo000);
+
+					cubo001 = cubitos();
+					cubo001.position.set(30, 0, 0);
+					escena.add(cubo001);
+					escena.add(edgeCubitos(cubo001));
+					//objects.push (cubo001);
+
+					cubo002 = cubitos();
+					cubo002.position.set(60, 0, 0);
+					escena.add(cubo002);
+					escena.add(edgeCubitos(cubo002));
+					//objects.push (cubo002);
+
+					cubo003 = cubitos();
+					cubo003.position.set(0, 30, 0);
+					escena.add(cubo003);
+					escena.add(edgeCubitos(cubo003));
+					//objects.push (cubo003);
+
+					cubo004 = cubitos();
+					cubo004.position.set(30, 30, 0);
+					escena.add(cubo004);
+					escena.add(edgeCubitos(cubo004));
+					//objects.push (cubo004);
+
+					cubo005 = cubitos();
+					cubo005.position.set(60, 30, 0);
+					escena.add(cubo005);
+					escena.add(edgeCubitos(cubo005));
+					//objects.push (cubo005);					
+
+					cubo006 = cubitos();
+					cubo006.position.set(0, 60, 0);
+					escena.add(cubo006);
+					escena.add(edgeCubitos(cubo006));
+					//objects.push (cubo006);
+
+					cubo007 = cubitos();
+					cubo007.position.set(30, 60, 0);
+					escena.add(cubo007);
+					escena.add(edgeCubitos(cubo007));
+					//objects.push (cubo007);
+
+					cubo008 = cubitos();
+					cubo008.position.set(60, 60, 0);
+					escena.add(cubo008);
+					escena.add(edgeCubitos(cubo008));
+					//objects.push (cubo008);
+
+					cubo009 = cubitos();
+					cubo009.position.set(0, 0, 30);
+					escena.add(cubo009);
+					escena.add(edgeCubitos(cubo009));
+					//objects.push (cubo009);					
+
+					cubo010 = cubitos();
+					cubo010.position.set(0, 30, 30);
+					escena.add(cubo010);
+					escena.add(edgeCubitos(cubo010));
+					//objects.push (cubo010);
+
+					cubo011 = cubitos();
+					cubo011.position.set(0, 60, 30);
+					escena.add(cubo011);
+					escena.add(edgeCubitos(cubo011));
+					//objects.push (cubo011);
+
+					cubo012 = cubitos();
+					cubo012.position.set(0, 0, 60);
+					escena.add(cubo012);
+					escena.add(edgeCubitos(cubo012));
+					//objects.push (cubo012);
+
+					cubo013 = cubitos();
+					cubo013.position.set(0, 30, 60);
+					escena.add(cubo013);
+					escena.add(edgeCubitos(cubo013));
+					//objects.push (cubo013);					
+
+					cubo014 = cubitos();
+					cubo014.position.set(0, 60, 60);
+					escena.add(cubo014);
+					escena.add(edgeCubitos(cubo014));
+					//objects.push (cubo014);					
+
+					cubo015 = cubitos();
+					cubo015.position.set(30, 60, 30);
+					escena.add(cubo015);
+					escena.add(edgeCubitos(cubo015));
+					//objects.push (cubo015);					
+
+					cubo016 = cubitos();
+					cubo016.position.set(30, 60, 60);
+					escena.add(cubo016);
+					escena.add(edgeCubitos(cubo016));
+					//objects.push (cubo016);					
+
+					cubo017 = cubitos();
+					cubo017.position.set(60, 60, 30);
+					escena.add(cubo017);
+					escena.add(edgeCubitos(cubo017));
+					//objects.push (cubo017);					
+
+					cubo018 = cubitos();
+					cubo018.position.set(60, 60, 60);
+					escena.add(cubo018);
+					escena.add(edgeCubitos(cubo018));
+					//objects.push (cubo018);					
+
+					cubo019 = cubitos();
+					cubo019.position.set(30, 0, 30);
+					escena.add(cubo019);
+					escena.add(edgeCubitos(cubo019));
+					//objects.push (cubo019);					
+
+					cubo020 = cubitos();
+					cubo020.position.set(30, 0, 60);
+					escena.add(cubo020);
+					escena.add(edgeCubitos(cubo020));
+					//objects.push (cubo020);					
+
+					cubo021 = cubitos();
+					cubo021.position.set(60, 0, 30);
+					escena.add(cubo021);
+					escena.add(edgeCubitos(cubo021));
+					//objects.push (cubo021);					
+
+					cubo022 = cubitos();
+					cubo022.position.set(60, 0, 60);
+					escena.add(cubo022);
+					escena.add(edgeCubitos(cubo022));
+					//objects.push (cubo022);					
+
+					cubo023 = cubitos();
+					cubo023.position.set(60, 30, 30);
+					escena.add(cubo023);
+					escena.add(edgeCubitos(cubo023));
+					//objects.push (cubo023);					
+
+					cubo024 = cubitos();
+					cubo024.position.set(60, 30, 60);
+					escena.add(cubo024);
+					escena.add(edgeCubitos(cubo024));
+					//objects.push (cubo024);					
+
+					cubo025 = cubitos();
+					cubo025.position.set(30, 30, 60);
+					escena.add(cubo025);
+					escena.add(edgeCubitos(cubo025));
+					//objects.push (cubo025);	
+			
+				}
+			</script>
+	</body>
+</html>>
