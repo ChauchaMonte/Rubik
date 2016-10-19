@@ -24,41 +24,37 @@
 
 
 				var objects = [];
-				var mouse = new THREE.Vector2();
-				var raycaster = THREE.Raycaster();
-				var INTERSECTED;
-			
+
 				startEscena();	
 				animate();
 
+
 				function startEscena(){
-				  camara = new THREE.PerspectiveCamera(45, canvasWidth / canvasHeight, 1, 1000); 
-				  
-				  camara.position.z = 600;
-				  camara.lookAt(new THREE.Vector3(0,0,0));
-				  controls = new THREE.TrackballControls( camara );
-				  controls.addEventListener ('change', render);
-				  controls.rotateSpeed = 7.0;
-				  controls.noZoom = true;
+					camara = new THREE.PerspectiveCamera(45, canvasWidth / canvasHeight, 1, 1000); 
 
-				  escena = new THREE.Scene(); // definimos la escena
-				  
-				  crearcubos();
+					camara.position.z = 600;
+					camara.lookAt(new THREE.Vector3(0,0,0));
+					controls = new THREE.TrackballControls( camara );
+					controls.addEventListener ('change', render);
+					controls.rotateSpeed = 7.0;
+					controls.noZoom = true;
 
-				  renderer = new THREE.WebGLRenderer({ antialias: true });
-				  renderer.setSize(canvasWidth, canvasHeight);
-				  renderer.setClearColor( 0xf0f0f0 );
-				  document.body.appendChild(renderer.domElement);
-				  
-				  window.addEventListener('resize', onWindowResize, false);
-				  window.addEventListener('mousemove', onWindowsClick);
-				  window.requestAnimationFrame(render);
+					escena = new THREE.Scene(); // definimos la escena
 
-				}
-				function onWindowsClick(event){
-					event.preventDefault();
-					mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-					mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+					crearcubos();
+
+					renderer = new THREE.WebGLRenderer({ antialias: true });
+					renderer.setSize(canvasWidth, canvasHeight);
+					renderer.setClearColor( 0xf0f0f0 );
+					document.body.appendChild(renderer.domElement);
+
+
+
+					window.addEventListener('resize', onWindowResize, false);
+					//espero evento del mouse
+					window.addEventListener('mousemove', onWindowsClick, false);
+					window.requestAnimationFrame(render);
+
 				}
 
 				function onWindowResize(e){
@@ -68,7 +64,23 @@
 					camara.aspect = canvasWidth/canvasHeight;
 					camara.updateProjectionMatrix();
 				}
-
+				
+				function onWindowsClick(event){
+					//tomo la posicion de mouse de "x", "y" y "z"
+					var mouse = new THREE.Vector3( (event.clientX / window.innerWidth ) * 2 - 1,
+									-( event.clientY / window.innerHeight ) * 2 + 1, 
+									0.5 );
+					//rayo
+					var raycaster = projector.pickingRay( mouse.clone(), camara );
+					//busco la intersection 
+					var intersects = raycaster.intersectObjects( escena.children );
+					//cambio el color del objeto que se encuentra sobre el mouse
+					if( intersects.length > 0 ){
+						intersects[0].object.material.color.setHex(0xFFFFFF);
+					}
+				}
+				
+				
 				function cubitos(){
 					var cubo;
 					var cuboMateriales = [
@@ -100,22 +112,9 @@
 				   controls.update();
 				   render();
 				}
-
+				
 				function render(){
-					//busco la interseccion con los cubitos y el mouse
-					/*raycaster.setFromCamera(mouse, camara);
-					var intersects = raycaster.intersectObject(escena.children);
-					if(intersects.length>0){
-						if ( INTERSECTED != intersects[ 0 ].object ) {
-							if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
-								INTERSECTED = intersects[ 0 ].object;
-								INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-								INTERSECTED.material.emissive.setHex( 0xff0000 );
-						}
-					}else{
-						if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
-						INTERSECTED = null;
-					}*/
+
 					renderer.render(escena, camara); 
 				}
 
@@ -125,19 +124,19 @@
 					cubo000.position.set(0, 0, 0);
 					escena.add(cubo000);
 					escena.add(edgeCubitos(cubo000));
-					//objects.push (cubo000);
+					objects.push (cubo000);
 
 					cubo001 = cubitos();
 					cubo001.position.set(30, 0, 0);
 					escena.add(cubo001);
 					escena.add(edgeCubitos(cubo001));
-					//objects.push (cubo001);
+					objects.push (cubo001);
 
 					cubo002 = cubitos();
 					cubo002.position.set(60, 0, 0);
 					escena.add(cubo002);
 					escena.add(edgeCubitos(cubo002));
-					//objects.push (cubo002);
+					objects.push (cubo002);
 
 					cubo003 = cubitos();
 					cubo003.position.set(0, 30, 0);
