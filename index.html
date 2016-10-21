@@ -10,6 +10,7 @@
 <body>
 	<script src="js/three.js"></script>
 	<script src="js/TrackballControls.js"></script>
+	<script src="js/stats.min.js"></script>
 	<div id="canvas" align="center"></div>
 		<script>
 				//creo variables pricipales necesarias
@@ -22,7 +23,9 @@
 				var cubo009;var cubo010;var cubo011;var cubo012;var cubo013;var cubo014;var cubo015;var cubo016;var cubo017;
 				var cubo018;var cubo019;var cubo020;var cubo021;var cubo022;var cubo023;var cubo024;var cubo025;
 
-
+				var mouse = new THREE.Vector2();
+				var raycaster = new THREE.Raycaster();
+				var INTERSECTED;
 				var objects = [];
 
 				startEscena();	
@@ -66,18 +69,9 @@
 				}
 				
 				function onWindowsClick(event){
-					//tomo la posicion de mouse de "x", "y" y "z"
-					var mouse = new THREE.Vector3( (event.clientX / window.innerWidth ) * 2 - 1,
-									-( event.clientY / window.innerHeight ) * 2 + 1, 
-									0.5 );
-					//rayo
-					var raycaster = projector.pickingRay( mouse.clone(), camara );
-					//busco la intersection 
-					var intersects = raycaster.intersectObjects( escena.children );
-					//cambio el color del objeto que se encuentra sobre el mouse
-					if( intersects.length > 0 ){
-						intersects[0].object.material.color.setHex(0xFFFFFF);
-					}
+					//tomo la posicion de mouse
+					mouse.x = event.clientX;
+					mouse.y = event.clientY;					
 				}
 				
 				
@@ -94,17 +88,18 @@
 					var cuboMaterial = new THREE.MeshFaceMaterial(cuboMateriales);
 					var cuboGeometria = new THREE.BoxGeometry(30, 30, 30);
 					cubo = new THREE.Mesh(cuboGeometria, cuboMaterial);
+					//box = new THREE.BoxHelper(cubo, 0x000000);
 					cubo.visible=true;
 				return cubo;
 				}
 				function edgeCubitos(cubito){
-					helper=new THREE.WireframeHelper(cubito);
-					helper.material.color.set(0x000000);
-					helper.visible=false;
-					escena.add(helper);
-					box = new THREE.BoxHelper(cubito);
-					box.material.color.set(0x000000);
-					objects.push (box);
+					//helper=new THREE.WireframeHelper(cubito);
+					//helper.material.color.set(0x000000);
+					//helper.visible=false;
+					//escena.add(helper);
+					box = new THREE.BoxHelper(cubito, 0x000000);
+					//box.material.color.set(0x000000);
+					//objects.push (box);
 				return box;
 				}
 				function animate() { 
@@ -114,29 +109,58 @@
 				}
 				
 				function render(){
-
+					pick();
 					renderer.render(escena, camara); 
+				}
+				function pick(){
+
+					renderer.render(escena, camara);
+
+					raycaster.set(camara, );
+					raycaster.setFromCamera( mouse, camara );
+
+					var intersects = raycaster.intersectObjects( escena.children );
+
+					if ( intersects.length > 0 ) {
+
+						if ( INTERSECTED != intersects[ 0 ].object ) {
+
+							if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+
+							INTERSECTED = intersects[ 0 ].object;
+							INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+							INTERSECTED.material.emissive.setHex( 0xffffff );
+
+						}
+
+					} else {
+
+						if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+
+						INTERSECTED = null;
+
+					}
 				}
 
 				function crearcubos(){
 				// CUBOS
 					cubo000 = cubitos();
 					cubo000.position.set(0, 0, 0);
-					escena.add(cubo000);
 					escena.add(edgeCubitos(cubo000));
-					objects.push (cubo000);
+					escena.add(cubo000);
+					//objects.push (cubo000);
 
 					cubo001 = cubitos();
 					cubo001.position.set(30, 0, 0);
+					escena.add(edgeCubitos(cubo001));					
 					escena.add(cubo001);
-					escena.add(edgeCubitos(cubo001));
-					objects.push (cubo001);
+					//objects.push (cubo001);
 
 					cubo002 = cubitos();
 					cubo002.position.set(60, 0, 0);
+					escena.add(edgeCubitos(cubo002));					
 					escena.add(cubo002);
-					escena.add(edgeCubitos(cubo002));
-					objects.push (cubo002);
+					//objects.push (cubo002);
 
 					cubo003 = cubitos();
 					cubo003.position.set(0, 30, 0);
